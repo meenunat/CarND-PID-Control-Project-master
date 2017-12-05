@@ -15,7 +15,6 @@ PID::PID() {
 	p_error = 0;
 	i_error = 0;
 	d_error = 0;
-	prev_time = clock()/CLOCKS_PER_SEC;
 }
 
 PID::~PID() {}
@@ -32,13 +31,10 @@ void PID::UpdateError(double cte) {
 	p_error = cte;
 	i_error += cte;
 	
-	//curr_time = clock();
-        //delta_time = (curr_time - prev_time)/CLOCKS_PER_SEC;
-	d_error = (cte - prev_cte);///delta_time;
-	//prev_time = curr_time; 
+
+	d_error = (cte - prev_cte);
  	prev_cte = cte;
 
-	std::cout << "p_error: " << p_error << "i_error: " << i_error << "d_error: " << d_error << "delta: " << delta_time << "prev_cte: " << prev_cte << std::endl;
 
 }
 

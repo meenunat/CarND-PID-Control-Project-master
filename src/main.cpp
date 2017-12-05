@@ -38,9 +38,6 @@ int main()
   double Init_Ki =0.0014;
   double Init_Kd =1.80;
 
-  //double prev_time = clock()/CLOCKS_PER_SEC;
-  //double curr_time = clock();
-
   pid.Init(Init_Kp,Init_Ki,Init_Kd);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
@@ -65,7 +62,7 @@ int main()
           * NOTE: Feel free to play around with the throttle and speed. Maybe use
           * another PID controller to control the speed!
           */
-	  double throttle = 0.7;
+	  double throttle = 1.0;
 	  pid.UpdateError(cte);
 
           steer_value = pid.TotalError();
@@ -76,7 +73,7 @@ int main()
 		steer_value = -1.0;
 	  }
 
-	  if (fabs(cte) > 0.25 && fabs(angle) > 3.5 && speed > 25.0) {
+	  if (fabs(cte) > 0.6 && fabs(angle) > 7.5 && speed > 25.0) {
           	 std::cout << "$" << std::endl; // curve
 	         throttle = -1.0;
           } 

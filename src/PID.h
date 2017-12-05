@@ -23,9 +23,6 @@ public:
   double Kd;
 
   double prev_cte;
-  double prev_time;
-  double curr_time;
-  double delta_time;
   /*
   * Constructor
   */
