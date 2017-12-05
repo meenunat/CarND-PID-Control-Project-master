@@ -1,99 +1,84 @@
-# CarND-Controls-PID
-Self-Driving Car Engineer Nanodegree Program
+# PID Controller Project
 
----
+## Objective: 
 
-## Dependencies
+The goal of the project is to drive the vehicle successfully around the track in the simulator using PID controller method to calculate the steering. 
 
-* cmake >= 3.5
- * All OSes: [click here for installation instructions](https://cmake.org/install/)
-* make >= 4.1(mac, linux), 3.81(Windows)
-  * Linux: make is installed by default on most Linux distros
-  * Mac: [install Xcode command line tools to get make](https://developer.apple.com/xcode/features/)
-  * Windows: [Click here for installation instructions](http://gnuwin32.sourceforge.net/packages/make.htm)
-* gcc/g++ >= 5.4
-  * Linux: gcc / g++ is installed by default on most Linux distros
-  * Mac: same deal as make - [install Xcode command line tools]((https://developer.apple.com/xcode/features/)
-  * Windows: recommend using [MinGW](http://www.mingw.org/)
-* [uWebSockets](https://github.com/uWebSockets/uWebSockets)
-  * Run either `./install-mac.sh` or `./install-ubuntu.sh`.
-  * If you install from source, checkout to commit `e94b6e1`, i.e.
-    ```
-    git clone https://github.com/uWebSockets/uWebSockets 
-    cd uWebSockets
-    git checkout e94b6e1
-    ```
-    Some function signatures have changed in v0.14.x. See [this PR](https://github.com/udacity/CarND-MPC-Project/pull/3) for more details.
-* Simulator. You can download these from the [project intro page](https://github.com/udacity/self-driving-car-sim/releases) in the classroom.
+## How to run:
 
-There's an experimental patch for windows in this [PR](https://github.com/udacity/CarND-PID-Control-Project/pull/3)
+This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
 
-## Basic Build Instructions
+This repository includes two files that can be used to set up and install uWebSocketIO for either Linux or Mac systems. For windows you can use either Docker, VMware, or even Windows 10 Bash on Ubuntu to install uWebSocketIO.
 
-1. Clone this repo.
-2. Make a build directory: `mkdir build && cd build`
-3. Compile: `cmake .. && make`
-4. Run it: `./pid`. 
+Once the install for uWebSocketIO is complete, the main program can be built and ran by doing the following from the project top directory.
 
-Tips for setting up your environment can be found [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
+	mkdir build
+	cd build
+	cmake ..
+	make
+	./pid
 
-## Editor Settings
+## Dependencies 
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+- cmake >= 3.5
+- All OSes: click here for installation instructions
+- make >= 4.1
+-- Linux: make is installed by default on most Linux distros
+-- Mac: install Xcode command line tools to get make
+-- Windows: Click here for installation instructions
+- gcc/g++ >= 5.4
+-- Linux: gcc / g++ is installed by default on most Linux distros
+-- Mac: same deal as make - [install Xcode command line tools]((https://developer.apple.com/xcode/features/)
+-- Windows: recommend using MinGW
+- uWebSockets == 0.13, but the master branch will probably work just fine
+-- Follow the instructions in the uWebSockets README to get setup for your platform. You can download the zip of the appropriate version from the releases page. Here's a link to the v0.13 zip.
+-- If you run OSX and have homebrew installed you can just run the ./install-mac.sh script to install this
+- Simulator. You can download these from the project intro page in the classroom.
+	
+## Directory Structure 
+The directory structure of this repository is as follows:
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+```
+root
+|   CMakeLists.txt
+|   cmakepatch.txt
+|   README.md
+|   *.sh
+|
+|___videos
+|   |
+|   |  pid_short.gif
+|
+|
+|___src
+    |   main.cpp
+    |   PID.h
+    |   PID.cpp
+    |   json.hpp
+```
 
-## Code Style
+## Proportional Integral Derivative (PID) Control 
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
+#### P (Proportional):
+- The P error term is proportional to cross-track error (CTE) and determines the speed of the control system response. 
+	
+- Increasing the proportional weight (Kp) increases the speed of the system response and enables the vehicle to make better sharp turns. However, if the proportional weight (Kp) is too large, the vehicle will begin to oscillate around the target trajectory. 
 
-## Project Instructions and Rubric
+- If Kp is increased further, the oscillations (overshooting of target trajectory) will become larger and the vehicle behavior will become unstable and it may even leave the track. 
 
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
+- The using P term alone does not allow to drive through turns on the track because the vehicle leads to overshoot the target trajectory too with unstable behavior at the end.
 
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
-for instructions and the project rubric.
+#### I (Integral):
+- The I error term is proportional to both the magnitude of the CTE and is defined by weight Ki. 
+- The integral term I accelerate the movement of the process towards target trajectory and eliminates the residual steady-state error as a bias between target trajectory and vehicle trajectory, that occurs with a pure proportional controller. 
+- The bias can be generated by wind or systematic error in the steering system.
 
-## Hints!
+#### D (Derivative):
 
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
+- The D error term is proportional to the rate of change of the CTE.
+- The adding of derivative term, defined by weight Kd, increases the stable behavior of the vehicle by damping the oscillation of vehicle, the overshooting of target trajectory - by increasing the speed of the overall control system response. So, adding the D-term allows the vehicle to drive through turns on the track and increasing of weight Kd allows driving through turns faster. 
+- On the other hand, increasing of weight Kd increases the sensitivity of control system to higher-frequency noise components but it is not actual in the current project.
 
-## Call for IDE Profiles Pull Requests
+## Discussions 
 
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
-# CarND-PID-Control-Project-master
+In this project Kp, Ki, and Kd values are constant and due to these value not being optimal in the simulator the car makes sharp steerings. As an improvement, Twiddle approach can be implemented for Kp,Ki, Kd, and speed parameter optimizations. 
