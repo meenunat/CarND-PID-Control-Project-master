@@ -4,6 +4,8 @@
 
 The goal of the project is to drive the vehicle successfully around the track in the simulator using PID controller method to calculate the steering. 
 
+![](videos/loop.ogv)
+
 ## How to run:
 
 This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
