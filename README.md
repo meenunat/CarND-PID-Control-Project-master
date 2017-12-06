@@ -4,7 +4,8 @@
 
 The goal of the project is to drive the vehicle successfully around the track in the simulator using PID controller method to calculate the steering. 
 
-![](videos/loop.ogv)
+Entire vidoe capture is uploaded to youtube link: (https://youtu.be/quCHeln77r8)
+
 
 ## How to run:
 
