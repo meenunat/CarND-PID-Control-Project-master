@@ -33,14 +33,17 @@ int main()
   uWS::Hub h;
 
   PID pid;
+  PID speed_pid;
+
   // TODO: Initialize the pid variable.
-  double Init_Kp =0.13;
-  double Init_Ki =0.0014;
-  double Init_Kd =1.80;
+  double Init_Kp =0.5;//0.13;
+  double Init_Ki =0.0001;//0.0;
+  double Init_Kd =5.0;//1.1;
 
   pid.Init(Init_Kp,Init_Ki,Init_Kd);
+  speed_pid.Init(Init_Kp,Init_Ki,Init_Kd);
 
-  h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+  h.onMessage([&pid,&speed_pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -56,13 +59,14 @@ int main()
           double speed = std::stod(j[1]["speed"].get<std::string>());
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
           double steer_value;
+	  double target_speed = 30;
           /*
           * TODO: Calcuate steering value here, remember the steering value is
           * [-1, 1].
           * NOTE: Feel free to play around with the throttle and speed. Maybe use
           * another PID controller to control the speed!
           */
-	  double throttle = 1.0;
+	  double throttle;
 	  pid.UpdateError(cte);
 
           steer_value = pid.TotalError();
@@ -72,16 +76,17 @@ int main()
 	  }else if (steer_value < -1.0){
 		steer_value = -1.0;
 	  }
+	  double speed_error = speed - target_speed;
+ 	  speed_pid.UpdateError(speed_error);
+	  throttle = speed_pid.TotalError();
 
-	  if (fabs(cte) > 0.6 && fabs(angle) > 7.5 && speed > 25.0) {
-          	 std::cout << "$" << std::endl; // curve
-	         throttle = -1.0;
-          } 
-	  else {
-          	  std::cout << "|" << std::endl; // straight
-          }	
+	  if (throttle > 1.5){
+		throttle = 1.5;
+	  }else if (throttle < -1.5){
+		throttle = -1.5;
+	  }
 
-          // DEBUG
+      // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
           json msgJson;
