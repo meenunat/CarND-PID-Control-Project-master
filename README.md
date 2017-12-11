@@ -4,7 +4,7 @@
 
 The goal of the project is to drive the vehicle successfully around the track in the simulator using PID controller method to calculate the steering. 
 
-Entire vidoe capture is uploaded to youtube link: (https://youtu.be/quCHeln77r8)
+Entire vidoe capture is uploaded to youtube link: (https://youtu.be/g_L7DvC0mHw)
 
 
 ## How to run:
@@ -84,4 +84,4 @@ root
 
 ## Discussions 
 
-In this project Kp, Ki, and Kd values are constant and due to these value not being optimal in the simulator the car makes sharp steerings. As an improvement, Twiddle approach can be implemented for Kp,Ki, Kd, and speed parameter optimizations. 
+In this project Kp, Ki, and Kd values are constant and due to these value not being optimal in the simulator the car makes sharp steerings. The parameters were tuned manually by setting Ki, Kd to zero initially and an optimal value of Kp was chosen which works fairly well. Then with Kp fixed, Kd was increased until the oscillations die down. Then Kp and Kd was tuned until there is no oscillations and the car drives smoothly. A small value of Ki was used maintaining the smooth drive. As an improvement, Twiddle approach can be implemented for Kp,Ki, Kd, and speed parameter optimizations. 
